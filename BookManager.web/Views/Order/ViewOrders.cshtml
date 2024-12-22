@@ -1,0 +1,40 @@
+﻿@model IEnumerable<BookManager.web.Data.DataAccess.OrderRepo.DTO.OrderDto>
+<link href="~/css/order/stylesheet.css" rel="stylesheet" />
+
+<div class="container my-5">
+    <h1 class="text-center text-primary mb-4">My Orders</h1>
+
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var order in Model)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="card shadow border-0 h-100">
+                        <img src="@(Url.Content(order.BookImage ?? "/images/default-book.jpg"))"
+                             class="card-img-top"
+                             alt="@order.BookTitle"
+                             style="height: 250px; object-fit: cover;" />
+                        <div class="card-body">
+                            <h5 class="card-title text-primary fw-bold">@order.BookTitle</h5>
+                            <p class="card-text text-muted mb-1"><strong>Order Date:</strong> @order.OrderDate.ToString("MMMM dd, yyyy")</p>
+                            <p class="card-text text-muted mb-1"><strong>Quantity:</strong> @order.Quantity</p>
+                            <p class="card-text"><strong>Total Price:</strong> <span class="text-success">@order.TotalPrice.ToString("C")</span></p>
+                        </div>
+                        <div class="card-footer bg-light">
+                            <p class="text-muted mb-1"><strong>Phone:</strong> @order.PhoneNumber</p>
+                            <p class="text-muted"><strong>Address:</strong> @order.Address</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center mt-5">
+            <p class="text-muted fs-4">You have no orders yet.</p>
+            <a href="@Url.Action("ViewBooks", "Book")" class="btn btn-primary btn-lg">Browse Books</a>
+        </div>
+    }
+</div>

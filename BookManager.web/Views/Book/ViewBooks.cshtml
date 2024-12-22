@@ -1,0 +1,145 @@
+﻿
+@model IEnumerable<BookManager.web.Data.Models.EntityModels.Transaction.Book>
+
+@{
+    ViewData["Title"] = "Books List";
+
+    var sortBy = ViewData["SortBy"]?.ToString();
+    var sortOptions = new Dictionary<string, string>
+    {
+        { "default", "Sort By" },
+        { "title", "Title" },
+        { "priceLowHigh", "Price: Low to High" },
+        { "priceHighLow", "Price: High to Low" },
+        { "publisherAuthorTitle", "Publisher, Author, Title" },
+        { "authorTitle", "Author, Title" }
+    };
+}
+
+<link href="~/css/book/book-list.css" rel="stylesheet" />
+
+<div class="container py-5">
+
+    <div class="row align-items-center mb-4">
+
+        <div class="col-md-6">
+            <form method="get" class="d-flex shadow-sm">
+                <input type="hidden" name="sortBy" value="@ViewData["SortBy"]" />
+                <input type="hidden" name="pageNumber" value="1" />
+                <input type="text" name="search" value="@ViewData["Search"]" class="form-control" placeholder="Search books..." />
+                <button type="submit" class="btn btn-accent ms-2 px-4">Search</button>
+            </form>
+        </div>
+
+		<div class="col-md-6 text-end">
+			<form method="get">
+				<input type="hidden" name="search" value="@ViewData["Search"]" />
+				<input type="hidden" name="pageNumber" value="1" />
+
+				<select name="sortBy" onchange="this.form.submit()" class="form-select shadow-sm">
+					@foreach (var option in sortOptions)
+					{
+						if (sortBy == option.Key)
+						{
+							<option value="@option.Key" selected>@option.Value</option>
+						}
+						else
+						{
+							<option value="@option.Key" )>@option.Value</option>
+						}
+					}
+				</select>
+
+			</form>
+		</div>
+    </div>
+
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var book in Model)
+            {
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="card book-card shadow border-0 position-relative h-100">
+                        <img src="@(Url.Content(book.ImageLocation ?? "/images/default-book.jpg"))"
+                             class="card-img-top"
+                             alt="@book.Title"
+                             style="height: 250px; object-fit: cover;" />
+
+                        <div class="badge-container">
+                            @if (book.IsAvailable)
+                            {
+                                <span class="badge bg-success position-absolute top-0 end-0 m-2">Available</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger position-absolute top-0 end-0 m-2">Not Available</span>
+                            }
+                        </div>
+                        <div class="card-overlay"></div>
+                        <div class="card-body position-relative">
+                            <h5 class="card-title text-primary fw-bold">@book.Title</h5>
+                            <p class="card-text text-muted">@book.Description.Substring(0, Math.Min(book.Description.Length, 100))...</p>
+                            <p><strong>Author:</strong> @book.Authors?.FirstName @book.Authors?.LastName</p>
+                            <p><strong>Publisher:</strong> @(book.Publishers?.Name ?? "N/A")</p>
+
+                            <div class="row d-flex justify-content-between align-items-center">
+                                <div class="col-auto">
+                                    <p class="mb-0"><strong>Price:</strong> <span class="text-success">@book.Price.ToString("C")</span></p>
+                                </div>
+                                <div class="col-auto">
+                                    @if (book.IsAvailable)
+                                    {
+                                        <p class="mb-0"><strong>In stock:</strong> <span class="text-success">@book.AvailableQuantity</span></p>
+                                    }
+                                    else
+                                    {
+                                        <p class="mb-0"><strong>In stock:</strong> <span class="text-danger">@book.AvailableQuantity</span></p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-center align-items-center bg-light position-relative" style="z-index: 2;">
+                            @if (book.IsAvailable)
+                            {
+                                <form method="post" action="@Url.Action("AddToCart", "Cart")" class="mb-0 px-2">
+                                    <input type="hidden" name="bookId" value="@book.Id" />
+                                    <button type="submit" class="btn btn-primary text-white btn-lg me-2">Add to Cart</button>
+                                </form>
+                            }
+                            
+                            <a href="@Url.Action("ViewBook", "Book", new { id = book.Id })" class="btn btn-accent btn-lg px-2">
+                                Details
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center">
+                <p class="text-muted">No books available.</p>
+            </div>
+        }
+    </div>
+
+    <nav class="mt-4" aria-label="Pagination">
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
+            {
+                <li class="page-item @(i == (int)ViewData["CurrentPage"] ? "active" : "")">
+                    <form method="get" class="d-inline">
+                        <input type="hidden" name="search" value="@ViewData["Search"]" />
+                        <input type="hidden" name="sortBy" value="@ViewData["SortBy"]" />
+                        <input type="hidden" name="pageNumber" value="@i" />
+                        <button type="submit" class="page-link">@i</button>
+                    </form>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>

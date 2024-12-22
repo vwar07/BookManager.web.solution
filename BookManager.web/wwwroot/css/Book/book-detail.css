@@ -1,0 +1,44 @@
+﻿.btn-accent {
+    background-color: #1D4ED8;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+    .btn-accent:hover {
+        background-color: #2563EB;
+        transform: scale(1.05);
+    }
+
+.card {
+    border-radius: 10px;
+}
+
+.card-img-top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.list-group-item {
+    font-size: 1rem;
+    border: none;
+    padding: 1rem;
+    background-color: #F9FAFB;
+}
+
+    .list-group-item:nth-child(even) {
+        background-color: #F3F4F6;
+    }
+
+h2 {
+    font-size: 2rem;
+    color: #1E40AF;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+.card-footer {
+    border-top: none;
+}

@@ -1,0 +1,67 @@
+﻿@model BookManager.web.Data.Models.EntityModels.Transaction.Book
+<link href="~/css/book/book-detail.css" rel="stylesheet" />
+
+
+<div class="container my-5">
+	<div class="row">
+		<div class="col-lg-4">
+			<div class="card shadow-lg">
+				<img src="@(Url.Content(Model?.ImageLocation ?? "/images/default-book.jpg"))"
+					 class="card-img-top"
+					 alt="@Model?.Title ?? " Book Image""
+					 style="height: 400px; object-fit: cover; border-radius: 10px;">
+			</div>
+		</div>
+
+		<div class="col-lg-8">
+			<div class="card shadow-lg border-0">
+				<div class="card-body">
+					<h2 class="text-primary fw-bold">@Model?.Title</h2>
+					<p class="text-muted">@(Model?.Description ?? "Description not available.")</p>
+
+					<div class="row mt-4">
+						<div class="col-md-6">
+							<p><strong>Author:</strong> @Model?.Authors?.FirstName @(Model?.Authors?.LastName ?? "N/A")</p>
+							<p><strong>Publisher:</strong> @(Model?.Publishers?.Name ?? "N/A")</p>
+						</div>
+						<div class="col-md-6">
+							<p><strong>Price:</strong> <span class="text-success">@(Model?.Price.ToString("C") ?? "N/A")</span></p>
+							@if (Model?.IsAvailable == true)
+							{
+								<p><strong>In Stock:</strong> <span class="text-success">@Model.AvailableQuantity</span></p>
+							}
+							else
+							{
+								<p><strong>In Stock:</strong> <span class="text-danger">Out of Stock</span></p>
+							}
+						</div>
+					</div>
+				</div>
+				<div class="card-footer bg-light d-flex justify-content-center align-items-center">
+					@if (Model.IsAvailable)
+					{
+						<form method="post" action="@Url.Action("AddToCart", "Cart")" class="mb-0 px-2">
+							<input type="hidden" name="bookId" value="@Model.Id" />
+							<button type="submit" class="btn btn-primary text-white btn-lg">Add to Cart</button>
+						</form>
+					}
+
+					<a href="@Url.Action("ViewBooks", "Book")" class="btn btn-outline-secondary btn-lg px-2">
+						Back to List
+					</a>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="row mt-5">
+		<div class="col-lg-12">
+			<h3 class="text-primary mb-3">Additional Information</h3>
+			<ul class="list-group list-group-flush shadow">
+				<li class="list-group-item"><strong>Published Date:</strong> @(Model?.CreatedDateTime.ToString("MMMM dd, yyyy") ?? "N/A")</li>
+			</ul>
+		</div>
+	</div>
+</div>
+

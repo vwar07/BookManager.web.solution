@@ -1,0 +1,39 @@
+﻿@model BookManager.web.Data.DataAccess.CartRepo.DTO.CartItemDto
+
+<div>
+    <img src="@(Url.Content(Model.BookImage ?? "/images/default-book.jpg"))" alt="@Model.BookTitle" class="img-fluid mb-3">
+    <h5>@Model.BookTitle</h5>
+
+    <p><strong>Price:</strong> <span id="bookPrice" data-price="@Model.BookPrice">@Model.BookPrice.ToString("C")</span></p>
+
+    <form id="confirmOrderForm" method="post" action="@Url.Action("ConfirmOrder", "Order")">
+        <input type="hidden" name="cartId" value="@Model.CartId" />
+        <div class="mb-3">
+            <label for="quantityInput" class="form-label">Quantity</label>
+            <input type="number" name="quantity" id="quantityInput" class="form-control" min="1" max="@Model.Quantity" value="1" autocomplete="off">
+        </div>
+        <div class="mb-3">
+            <label for="phoneNumber" class="form-label">Phone Number</label>
+            <input type="tel" name="phoneNumber" id="phoneNumber" class="form-control" placeholder="Enter your phone number" required>
+        </div>
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea name="address" id="address" class="form-control" rows="3" placeholder="Enter your address" required></textarea>
+        </div>
+        <p><strong>Total:</strong> <span id="totalPrice">@Model.BookPrice.ToString("C")</span></p>
+        <button type="submit" class="btn btn-primary">Confirm Order</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('quantityInput').addEventListener('input', function () {
+        const quantity = parseInt(this.value) || 1;
+        const price = parseFloat(document.getElementById('bookPrice').dataset.price);
+        const total = quantity * price;
+        document.getElementById('totalPrice').textContent = total.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        });
+    });
+</script>
+

@@ -1,0 +1,12 @@
+{
+    "ApplicationAdminRoleConfig": {
+        "ApplicationAdminRoleUsers": [
+            {
+                "FirstName": "Vigneshwaran",
+                "LastName": "R",
+                "Email": "vigneshwaranravi07@gmail.com",
+                "Password": "Vignesh@98"
+            }
+        ]
+    }
+}

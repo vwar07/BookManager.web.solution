@@ -1,0 +1,77 @@
+﻿@model BookManager.web.Data.Models.EntityModels.Transaction.Book
+<link href="~/css/book/add-book.css" rel="stylesheet" />
+
+
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">Add New Book</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <form asp-action="AddBook" method="post" enctype="multipart/form-data" class="shadow-sm p-4 bg-white rounded">
+        <div class="mb-3">
+            <label for="Title" class="form-label">Title</label>
+            <input type="text" asp-for="Title" class="form-control" id="Title" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="Description" class="form-label">Description</label>
+            <textarea asp-for="Description" class="form-control" id="Description" rows="4"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="Price" class="form-label">Price</label>
+            <input type="number" asp-for="Price" class="form-control" id="Price" step="0.01" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="AvailableQuantity" class="form-label">Available Quantity</label>
+            <input type="number" asp-for="AvailableQuantity" class="form-control" id="AvailableQuantity" />
+            <span asp-validation-for="AvailableQuantity" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="ImageLocation" class="form-label">Upload Image</label>
+            <input type="file" asp-for="ImageLocation" class="form-control" id="ImageLocation" />
+            <span asp-validation-for="ImageLocation" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="AuthorId" class="form-label">Author</label>
+                <select asp-for="AuthorId" class="form-select" id="AuthorId">
+                    <option value="">Select Author</option>
+                    @foreach (var author in ViewBag.Authors)
+                    {
+                        <option value="@author.Id">@author.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="AuthorId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="PublisherId" class="form-label">Publisher</label>
+                <select asp-for="PublisherId" class="form-select" id="PublisherId">
+                    <option value="">Select Publisher</option>
+                    @foreach (var publisher in ViewBag.Publishers)
+                    {
+                        <option value="@publisher.Id">@publisher.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="PublisherId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary px-5">Add Book</button>
+            <a href="@Url.Action("ViewBooks", "Book")" class="btn btn-outline-secondary px-5 ms-3">Cancel</a>
+        </div>
+    </form>
+</div>

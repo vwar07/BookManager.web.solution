@@ -1,0 +1,83 @@
+﻿@model IEnumerable<BookManager.web.Data.DataAccess.CartRepo.DTO.CartItemDto>
+
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">My Cart</h1>
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <img src="@(Url.Content(item.BookImage ?? "/images/default-book.jpg"))"
+                             class="card-img-top"
+                             alt="@item.BookTitle"
+                             style="height: 250px; object-fit: cover;" />
+
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">@item.BookTitle</h5>
+                            <p><strong>Price:</strong> <span class="text-success">@item.BookPrice.ToString("C")</span></p>
+                            <p><strong>Quantity:</strong> @item.Quantity</p>
+                            <p><strong>Total:</strong> <span class="text-success">@item.TotalPrice.ToString("C")</span></p>
+                        </div>
+
+                        <div class="card-footer bg-light d-flex justify-content-between">
+                            <form method="post" action="@Url.Action("RemoveItemFromCart", "Cart")">
+                                <input type="hidden" name="cartId" value="@item.CartId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                            <button class="btn btn-primary btn-sm place-order-btn" data-id="@item.CartId">Place Order</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <p class="text-muted">Your cart is empty.</p>
+            <a href="@Url.Action("ViewBooks", "Book")" class="btn btn-primary">Go to Books</a>
+        </div>
+    }
+</div>
+
+<div class="modal fade" id="placeOrderModal" tabindex="-1" aria-labelledby="placeOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="placeOrderModalLabel">Place Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).on("click", ".place-order-btn", function () {
+            const cartId = $(this).data("id");
+            $.post("@Url.Action("PlaceOrder", "Order")", { cartId: cartId }, function (response) {
+                $("#modalBody").html(response);
+                $("#placeOrderModal").modal("show");
+            });
+        });
+
+        $(document).on("submit", "#confirmOrderForm", function (e) {
+            e.preventDefault();
+            $.post($(this).attr("action"), $(this).serialize(), function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    location.reload();
+                } else {
+                    alert(response.message);
+                }
+            });
+        });
+    </script>
+}
